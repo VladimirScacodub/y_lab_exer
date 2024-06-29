@@ -22,9 +22,10 @@ public class BookedPlaceValidator {
 
     /**
      * Валидация данных для нового бронирования доступного места
-     * @param place - Место, которое нужно забронировать
-     * @param from - дата начала бронирования
-     * @param to - дата окончания бронирования
+     *
+     * @param place Место, которое нужно забронировать
+     * @param from  дата начала бронирования
+     * @param to    дата окончания бронирования
      * @throws BookedPlaceConflictsException если возникает конфликт бронирования
      */
     public void validateBookingPlace(Place place, LocalDateTime from, LocalDateTime to) throws BookedPlaceConflictsException {
@@ -32,15 +33,16 @@ public class BookedPlaceValidator {
             throw new BookedPlaceConflictsException("Дата старта должна быть до даты конца букинга!");
         }
 
-        if (someBookingConflicts(place, new Slot(from, to))) {
+        if (someBookingConflicts(place, Slot.builder().start(from).end(to).build())) {
             throw new BookedPlaceConflictsException("Конфликт бронирования. Данное рабочее место уже было забронированно в данный промежуток времени!");
         }
     }
 
     /**
      * Определяет наличие конфликтов бронирования
-     * @param place - место
-     * @param slot - временой слот, включающий даты старта и окончания бронирования
+     *
+     * @param place место
+     * @param slot  временой слот, включающий даты старта и окончания бронирования
      * @return true если есть конфликт для указанного место, иначе false
      */
     private boolean someBookingConflicts(Place place, Slot slot) {
@@ -51,8 +53,9 @@ public class BookedPlaceValidator {
 
     /**
      * Определяет пересечение временых слотов
-     * @param newSlot - слот, для нового бронирования
-     * @param existingSlot - забронированный слот
+     *
+     * @param newSlot      слот, для нового бронирования
+     * @param existingSlot забронированный слот
      * @return true - если конфликт существует, иначе false
      */
     private boolean isSlotConflict(Slot newSlot, Slot existingSlot) {
@@ -64,8 +67,9 @@ public class BookedPlaceValidator {
 
     /**
      * Проверяет если временый границы нового слота содержат в себе все временные границы старого слота
-     * @param newSlot - новый слот
-     * @param existingSlot - уже существующий слот
+     *
+     * @param newSlot      новый слот
+     * @param existingSlot уже существующий слот
      * @return true - если существующий слот это часть нового, иначе false
      */
     private boolean isExistingSlotInNewSlot(Slot newSlot, Slot existingSlot) {
@@ -74,8 +78,9 @@ public class BookedPlaceValidator {
 
     /**
      * Проверяет, впадает ли конечная дата нового слота в существующий слот
-     * @param newSlot - новый слот
-     * @param existingSlot - уже существующий слот
+     *
+     * @param newSlot      новый слот
+     * @param existingSlot уже существующий слот
      * @return true - если впадает, иначе false
      */
     private boolean isEndDateInExistingSlot(Slot newSlot, Slot existingSlot) {
@@ -84,8 +89,9 @@ public class BookedPlaceValidator {
 
     /**
      * Проверяет, впадает ли начальная дата нового слота в существующий слот
-     * @param newSlot - новый слот
-     * @param existingSlot - уже существующий слот
+     *
+     * @param newSlot      новый слот
+     * @param existingSlot уже существующий слот
      * @return true - если впадает, иначе false
      */
     private boolean isStartDateInExistingSlot(Slot newSlot, Slot existingSlot) {
@@ -94,11 +100,12 @@ public class BookedPlaceValidator {
 
     /**
      * Првоеряет, совпадают ли начальные и конечные даты у нового и существующего слотов
-     * @param newSlot - новый слот
-     * @param existingSlot - - уже существующий слот
+     *
+     * @param newSlot      новый слот
+     * @param existingSlot уже существующий слот
      * @return true - если они одинаковые, иначе false
      */
-    private boolean isNewSlotEqualToExistingSlot (Slot newSlot, Slot existingSlot){
+    private boolean isNewSlotEqualToExistingSlot(Slot newSlot, Slot existingSlot) {
         return newSlot.getStart().isEqual(existingSlot.getStart()) || newSlot.getEnd().isEqual(existingSlot.getEnd());
     }
 }
