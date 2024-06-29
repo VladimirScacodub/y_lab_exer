@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        logicalFilePath="db/changelog.xml">
+    <include file="schemas-creation/000-create-coworking-schema.xml" relativeToChangelogFile="true"/>
+    <include file="tables-creation/001-create-table-users.xml" relativeToChangelogFile="true"/>
+    <include file="tables-creation/002-create-table-places.xml" relativeToChangelogFile="true"/>
+    <include file="tables-creation/003-create-table-slots.xml" relativeToChangelogFile="true"/>
+    <include file="tables-creation/004-create-table-booked-places.xml" relativeToChangelogFile="true"/>
+    <include file="tables-insertion/005-insert-table-users.xml" relativeToChangelogFile="true"/>
+    <include file="tables-insertion/006-insert-table-places.xml" relativeToChangelogFile="true"/>
+    <include file="tables-insertion/007-insert-table-slots.xml" relativeToChangelogFile="true"/>
+    <include file="tables-insertion/008-insert-table-booked-places.xml" relativeToChangelogFile="true"/>
+    <include file="trigger-creation/009-create-trigger-booked-places-slots.xml" relativeToChangelogFile="true"/>
+
+</databaseChangeLog>

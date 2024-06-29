@@ -38,6 +38,7 @@ public class BookedPlace {
 
     /**
      * Отображение объекта BookedPlace в String
+     *
      * @return String Отображение BookedPlace
      */
 

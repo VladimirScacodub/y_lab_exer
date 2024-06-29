@@ -34,7 +34,7 @@ import static utils.TestUtils.NEW_NAME_STRING;
 import static utils.TestUtils.PLACE_TEST_OBJECT;
 import static utils.TestUtils.TEST_BOOKED_PLACE_LIST;
 import static utils.TestUtils.TEST_DATE;
-import static utils.TestUtils.TEST_PLACE_NAME;
+import static utils.TestUtils.TEST_PLACE_NAME_0;
 import static utils.TestUtils.TEST_PLACE_TYPE;
 import static utils.TestUtils.TEST_PLACE_TYPE_STRING;
 
@@ -58,8 +58,6 @@ public class MenuOutputTest {
 
     @Mock
     BookedPlaceValidator bookedPlaceValidator;
-
-
 
     @InjectMocks
     MenuOutput menuOutput;
@@ -90,12 +88,12 @@ public class MenuOutputTest {
     @Timeout(value = 2, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
     @DisplayName("Тест на вызов бронирования рабочего места")
     void performMenuShouldBookPlaceTest() {
-        when(placeService.findByName(TEST_PLACE_NAME)).thenReturn(Optional.of(PLACE_TEST_OBJECT));
+        when(placeService.findByName(TEST_PLACE_NAME_0)).thenReturn(Optional.of(PLACE_TEST_OBJECT));
         mockAuthorisation()
                 .doReturn("2")
                 .doReturn(TEST_DATE)
                 .doReturn("1")
-                .doReturn(TEST_PLACE_NAME)
+                .doReturn(TEST_PLACE_NAME_0)
                 .doReturn(TEST_DATE + " 12:00")
                 .doReturn(TEST_DATE + " 15:00")
                 .doReturn("0")
@@ -149,14 +147,14 @@ public class MenuOutputTest {
     void performMenuShouldCallPlaceCreationTest() {
         mockAuthorisation()
                 .doReturn("5")
-                .doReturn(TEST_PLACE_NAME)
+                .doReturn(TEST_PLACE_NAME_0)
                 .doReturn(TEST_PLACE_TYPE_STRING)
                 .doReturn("0")
                 .when(menuOutput).inputLine();
 
         menuOutput.performMenu();
 
-        verify(placeService).createNewPlace(TEST_PLACE_NAME, TEST_PLACE_TYPE);
+        verify(placeService).createNewPlace(TEST_PLACE_NAME_0, TEST_PLACE_TYPE);
     }
 
     /**
@@ -175,14 +173,14 @@ public class MenuOutputTest {
     void performMenuShouldCallPlaceRemovalTest() throws PlaceNamingException {
         mockAuthorisation()
                 .doReturn("6")
-                .doReturn(TEST_PLACE_NAME)
+                .doReturn(TEST_PLACE_NAME_0)
                 .doReturn("1")
                 .doReturn("0")
                 .when(menuOutput).inputLine();
 
         menuOutput.performMenu();
 
-        verify(bookedPlaceService).cancelBookingWithRemovingPlace(TEST_PLACE_NAME);
+        verify(bookedPlaceService).cancelBookingWithRemovingPlace(TEST_PLACE_NAME_0);
     }
 
     @Test
@@ -191,7 +189,7 @@ public class MenuOutputTest {
     void performMenuShouldCallPlaceUpdatingTest() throws PlaceNamingException {
         mockAuthorisation()
                 .doReturn("7")
-                .doReturn(TEST_PLACE_NAME)
+                .doReturn(TEST_PLACE_NAME_0)
                 .doReturn(NEW_NAME_STRING)
                 .doReturn(TEST_PLACE_TYPE_STRING)
                 .doReturn("0")
@@ -199,7 +197,7 @@ public class MenuOutputTest {
 
         menuOutput.performMenu();
 
-        verify(placeService).updatePlace(TEST_PLACE_NAME, NEW_NAME_STRING, TEST_PLACE_TYPE);
+        verify(placeService).updatePlace(TEST_PLACE_NAME_0, NEW_NAME_STRING, TEST_PLACE_TYPE);
     }
 
     @Test
