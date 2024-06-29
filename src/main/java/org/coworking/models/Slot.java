@@ -14,7 +14,12 @@ import java.util.Objects;
 @Getter
 @Builder
 @AllArgsConstructor
-public class Slot implements Comparable<Slot>{
+public class Slot implements Comparable<Slot> {
+
+    /**
+     * Идентификатор слота
+     */
+    private int id;
 
     /**
      * Начало бронирования
@@ -28,6 +33,7 @@ public class Slot implements Comparable<Slot>{
 
     /**
      * Отображение объекта Slot в String
+     *
      * @return String Отображение Slot
      */
     @Override
@@ -37,7 +43,8 @@ public class Slot implements Comparable<Slot>{
 
     /**
      * Метод сравнивающий два объекта на равность
-     * @param o - другой объект
+     *
+     * @param o другой объект
      * @return true если объекты равны, иначе false
      */
     @Override
@@ -51,6 +58,7 @@ public class Slot implements Comparable<Slot>{
 
     /**
      * Отображеие текущего объекта в int
+     *
      * @return hashcode текущего объекта
      */
     @Override
@@ -62,6 +70,7 @@ public class Slot implements Comparable<Slot>{
 
     /**
      * Метод стравнения двух объектов Slot
+     *
      * @param o объект для сравнения.
      * @return 0 если два объекта равны, положительное число
      * если вызывающий объект больше объекта, переданного в качестве параметра

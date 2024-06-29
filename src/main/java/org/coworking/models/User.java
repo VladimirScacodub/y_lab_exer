@@ -4,9 +4,9 @@ package org.coworking.models;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.coworking.models.enums.Role;
+
+import java.util.Objects;
 
 /**
  * Класс отвечающий за сущность пользователя
@@ -14,7 +14,7 @@ import org.coworking.models.enums.Role;
 @Getter
 @AllArgsConstructor
 @Builder
-public class User implements Comparable<User>{
+public class User implements Comparable<User> {
 
     /**
      * Идентификатор пользователя
@@ -38,7 +38,8 @@ public class User implements Comparable<User>{
 
     /**
      * Метод сравнивающий два объекта на равность
-     * @param o - другой объект
+     *
+     * @param o другой объект
      * @return true если объекты равны, иначе false
      */
     @Override
@@ -47,11 +48,12 @@ public class User implements Comparable<User>{
         if (o == null || getClass() != o.getClass()) return false;
 
         User user = (User) o;
-        return id == user.id;
+        return id == user.id && Objects.equals(name, user.getName());
     }
 
     /**
      * Отображение объекта User в String
+     *
      * @return String Отображение User
      */
     @Override
@@ -64,6 +66,7 @@ public class User implements Comparable<User>{
 
     /**
      * Отображеие текущего объекта в int
+     *
      * @return hashcode текущего объекта
      */
     @Override
@@ -73,6 +76,7 @@ public class User implements Comparable<User>{
 
     /**
      * Метод стравнения двух объектов User
+     *
      * @param o объект для сравнения.
      * @return 0 если два объекта равны, положительное число
      * если вызывающий объект больше объекта, переданного в качестве параметра

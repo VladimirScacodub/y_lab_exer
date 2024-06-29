@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        logicalFilePath="db/changelog.xml">
+    <changeSet id="001-create-table-users" author="Scacodub Vladimir">
+        <createSequence sequenceName="user_id_seq"
+                        dataType="int"
+                        startValue="1"
+                        incrementBy="1"
+                        schemaName="coworking_schema"/>
+        <createTable tableName="users" schemaName="coworking_schema">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role" type="VARCHAR(5)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addDefaultValue tableName="users"
+                         columnName="id"
+                         defaultValueSequenceNext="user_id_seq"
+                         schemaName="coworking_schema"/>
+        <setColumnRemarks tableName="users"
+                          columnName="id"
+                          remarks="Первичный ключ, использующийся для идентификации пользователя"
+                          schemaName="coworking_schema"/>
+        <setColumnRemarks tableName="users"
+                          columnName="name"
+                          remarks="Имя пользователя, которая используется для авторизации пользователя"
+                          schemaName="coworking_schema"/>
+        <setColumnRemarks tableName="users"
+                          columnName="password"
+                          remarks="Пароль, использующийся для авторизации пользователя"
+                          schemaName="coworking_schema"/>
+        <setColumnRemarks tableName="users"
+                          columnName="role"
+                          remarks="Роль пользователя, которая используется для контроля доступа к разному функционалу"
+                          schemaName="coworking_schema"/>
+
+    </changeSet>
+</databaseChangeLog>

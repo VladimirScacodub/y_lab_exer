@@ -1,0 +1,12 @@
+version: 3.0;
+
+services:
+  database:
+    container_name: postgres_db
+    image: postgres
+    ports:
+      - 5234:5432
+    environment:
+      POSTGRES_DB: 'coworking_service'
+      POSTGRES_USER: 'user'
+      POSTGRES_PASSWORD: 'password'

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        logicalFilePath="db/changelog.xml">
+    <changeSet id="008-insert-table-booked-places" author="Scacodub Vladimir">
+        <insert tableName="booked_places" schemaName="coworking_schema">
+            <column name="user_id">1</column>
+            <column name="place_id">1</column>
+            <column name="slot_id">1</column>
+        </insert>
+        <insert tableName="booked_places" schemaName="coworking_schema">
+            <column name="user_id">1</column>
+            <column name="place_id">1</column>
+            <column name="slot_id">3</column>
+        </insert>
+        <insert tableName="booked_places" schemaName="coworking_schema">
+            <column name="user_id">1</column>
+            <column name="place_id">2</column>
+            <column name="slot_id">2</column>
+        </insert>
+        <insert tableName="booked_places" schemaName="coworking_schema">
+            <column name="user_id">1</column>
+            <column name="place_id">2</column>
+            <column name="slot_id">4</column>
+        </insert>
+        <insert tableName="booked_places" schemaName="coworking_schema">
+            <column name="user_id">1</column>
+            <column name="place_id">3</column>
+            <column name="slot_id">5</column>
+        </insert>
+        <insert tableName="booked_places" schemaName="coworking_schema">
+            <column name="user_id">1</column>
+            <column name="place_id">3</column>
+            <column name="slot_id">6</column>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
