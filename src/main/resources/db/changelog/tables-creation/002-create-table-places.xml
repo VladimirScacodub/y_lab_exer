@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        logicalFilePath="db/changelog.xml">
+    <changeSet id="002-create-table-places" author="Scacodub Vladimir">
+        <createSequence sequenceName="place_id_seq"
+                        dataType="int"
+                        startValue="1"
+                        incrementBy="1"
+                        schemaName="coworking_schema"/>
+        <createTable tableName="places" schemaName="coworking_schema">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="place_name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="place_type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addDefaultValue tableName="places"
+                         columnName="id"
+                         defaultValueSequenceNext="place_id_seq"
+                         schemaName="coworking_schema"/>
+        <setColumnRemarks tableName="places"
+                          columnName="id"
+                          remarks="Первичный ключ, использующийся для идентификации места"
+                          schemaName="coworking_schema"/>
+        <setColumnRemarks tableName="places"
+                          columnName="place_name"
+                          remarks="Название места, которое можно будет бронировать"
+                          schemaName="coworking_schema"/>
+        <setColumnRemarks tableName="places"
+                          columnName="place_type"
+                          remarks="Тип места, которое может быть WORKPLACE или CONFERENCE_HALL"
+                          schemaName="coworking_schema"/>
+    </changeSet>
+</databaseChangeLog>

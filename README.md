@@ -1,5 +1,5 @@
 # y_lab_exer
 
-Ссылка на PR:https://github.com/VladimirScacodub/y_lab_exer/pull/1
+Для запуска приложения требуется установленный докер, а также запустить docker-compose.yml файл через `docker-compose up --build -d`
 
 Запускать проект строго на Inteliji Idea, нормальный запуск через cmd не гарантируется

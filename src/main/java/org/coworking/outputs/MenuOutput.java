@@ -64,11 +64,6 @@ public class MenuOutput {
     private BookedPlaceValidator bookedPlaceValidator;
 
     /**
-     * Инструемент чтения данных с клавиатуры
-     */
-
-
-    /**
      * Текущий зрегестрированный пользователб
      */
     @Getter
@@ -112,6 +107,7 @@ public class MenuOutput {
 
     /**
      * Запуск главного меню
+     *
      * @param authorisedUser данные об авторизированом пользователе
      */
     private void doAuthorizedMenu(User authorisedUser) {
@@ -211,7 +207,7 @@ public class MenuOutput {
     }
 
     /**
-     *  запуск меню для создания нового места
+     * запуск меню для создания нового места
      */
     private void doPlaceCreationMenu() {
         while (true) {
@@ -255,6 +251,7 @@ public class MenuOutput {
 
     /**
      * Запуск меню для выбора параметра сортировки
+     *
      * @return введенный параметр
      */
     private String showSortingParametersMenu() {
@@ -295,6 +292,7 @@ public class MenuOutput {
 
     /**
      * демонстрация списка бронирований для их отмены
+     *
      * @return id конкретного бронирования, которое будет удалено
      */
     private String showCancelBookingMenu() {
@@ -376,6 +374,7 @@ public class MenuOutput {
 
     /**
      * Демонстрация опций по бронированию места
+     *
      * @return введеный id опции
      */
     private String showBookingMenu() {
@@ -399,6 +398,7 @@ public class MenuOutput {
 
     /**
      * Демонтрация главного меню, зависящая от роли пользователя (опции 4,5,6,7 доступны только админ-ам)
+     *
      * @param roleOfUser - роль пользователя
      * @return
      */
@@ -424,6 +424,7 @@ public class MenuOutput {
 
     /**
      * Демонстрация меню входа в систему
+     *
      * @return выбранный id опции
      */
     private String doLoginMenu() {
@@ -438,6 +439,7 @@ public class MenuOutput {
 
     /**
      * Выводит список рабочих мест и их свободные слоты на определенныую дату
+     *
      * @param date - день по которому вычисляются все свободные слоты
      */
     public void showFreePlaces(LocalDateTime date) {
@@ -469,6 +471,7 @@ public class MenuOutput {
 
     /**
      * Запуск меню авторизации
+     *
      * @return авторизированый объект User
      */
     private User authoriseUser() {

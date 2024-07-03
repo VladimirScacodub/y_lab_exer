@@ -13,6 +13,7 @@ public class UserTest {
     void equalsShouldReturnTrueWithSameIDUserObjectUsers(){
         final User USER_WITH_SAME_ID = User.builder()
                 .id(USER_TEST_OBJECT.getId())
+                .name(USER_TEST_OBJECT.getName())
                 .build();
 
         Assertions.assertThat(USER_TEST_OBJECT.equals(USER_WITH_SAME_ID)).isTrue();

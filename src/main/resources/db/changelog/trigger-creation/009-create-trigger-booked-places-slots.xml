@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        logicalFilePath="db/changelog.xml">
+    <changeSet id="009-create-trigger-booked-places-slots" author="Scacodub Vladimir">
+        <sql>
+            CREATE OR REPLACE FUNCTION slot_deleting_function ()
+            RETURNS TRIGGER AS
+            '
+            BEGIN
+                DELETE FROM coworking_schema.slots WHERE id = OLD.slot_id;
+                RETURN OLD;
+            END;
+            ' LANGUAGE 'plpgsql';
+            CREATE OR REPLACE TRIGGER slots_deleting_after_booked_place
+                AFTER DELETE ON coworking_schema.booked_places
+                FOR EACH ROW
+                EXECUTE PROCEDURE slot_deleting_function();
+        </sql>
+    </changeSet>
+</databaseChangeLog>

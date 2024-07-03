@@ -20,35 +20,38 @@ public class PlaceValidator {
 
     /**
      * Проверяет отсуствие места с указанным именем
-     * @param placeName - имя места
+     *
+     * @param placeName имя места
      * @throws PlaceNamingException в случае если такое место существует
      */
     public void validateExistedPlaceName(String placeName) throws PlaceNamingException {
-        if (placeService.findByName(placeName).isPresent()){
+        if (placeService.findByName(placeName).isPresent()) {
             throw new PlaceNamingException("Рабочее место с таким именем уже существует!");
         }
     }
 
     /**
      * Валидирует данные используемые для обновления рабочего места
-     * @param placeName - имя места, которое используется для поиска
-     * @param newPlaceName - новое имя для текщего места
+     *
+     * @param placeName    имя места, которое используется для поиска
+     * @param newPlaceName новое имя для текщего места
      * @throws PlaceNamingException выбрасывается в случае передачи некоректных данных (несуществующего места или занятого имени)
      */
     public void validatePlaceUpdating(String placeName, String newPlaceName) throws PlaceNamingException {
         Place oldPlace = placeService.findByName(placeName)
-                .orElseThrow(()->new PlaceNamingException("Рабочее место с таким именем не существует!"));
+                .orElseThrow(() -> new PlaceNamingException("Рабочее место с таким именем не существует!"));
 
-        if (doesAnotherPlaceWithThisNameExists(placeName, oldPlace)){
+        if (doesAnotherPlaceWithThisNameExists(placeName, oldPlace)) {
             throw new PlaceNamingException("Другое place с таким именем уже существует!");
         }
     }
 
     /**
      * Проверяет новое имя для места на занятость другим местом
-     * @param placeName - Новое имя для места
-     * @param oldPlace - Текущее имя для места
-     * @return true - если новое имя занято, иначе false
+     *
+     * @param placeName Новое имя для места
+     * @param oldPlace  Текущее имя для места
+     * @return true если новое имя занято, иначе false
      */
     private boolean doesAnotherPlaceWithThisNameExists(String placeName, Place oldPlace) {
         return placeService.getAllPlaces().stream()

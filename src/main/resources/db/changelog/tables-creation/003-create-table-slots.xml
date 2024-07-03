@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        logicalFilePath="db/changelog.xml">
+    <changeSet id="003-create-table-slots" author="Scacodub Vladimir">
+        <createSequence sequenceName="slot_id_seq"
+                        dataType="int"
+                        startValue="1"
+                        incrementBy="1"
+                        schemaName="coworking_schema"/>
+        <createTable tableName="slots" schemaName="coworking_schema">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"  />
+            </column>
+            <column name="start_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addDefaultValue tableName="slots"
+                         columnName="id"
+                         defaultValueSequenceNext="slot_id_seq"
+                         schemaName="coworking_schema"/>
+        <setColumnRemarks tableName="slots"
+                          columnName="id"
+                          remarks="Первичный ключ, использующийся для идентификации временого слота"
+                          schemaName="coworking_schema"/>
+        <setColumnRemarks tableName="slots"
+                          columnName="start_date"
+                          remarks="Дата и время начала временого слота"
+                          schemaName="coworking_schema"/>
+        <setColumnRemarks tableName="slots"
+                          columnName="end_date"
+                          remarks="Дата и время конца временого слота"
+                          schemaName="coworking_schema"/>
+    </changeSet>
+</databaseChangeLog>

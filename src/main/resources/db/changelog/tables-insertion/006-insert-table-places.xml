@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        logicalFilePath="db/changelog.xml">
+    <changeSet id="006-insert-table-places" author="Scacodub Vladimir">
+        <insert tableName="places" schemaName="coworking_schema">
+            <column name="place_name">Workplace 0</column>
+            <column name="place_type">WORKPLACE</column>
+        </insert>
+        <insert tableName="places" schemaName="coworking_schema">
+            <column name="place_name">Workplace 1</column>
+            <column name="place_type">WORKPLACE</column>
+        </insert>
+        <insert tableName="places" schemaName="coworking_schema">
+            <column name="place_name">Workplace 2</column>
+            <column name="place_type">WORKPLACE</column>
+        </insert>
+        <insert tableName="places" schemaName="coworking_schema">
+            <column name="place_name">Workplace 3</column>
+            <column name="place_type">WORKPLACE</column>
+        </insert>
+        <insert tableName="places" schemaName="coworking_schema">
+            <column name="place_name">Workplace 4</column>
+            <column name="place_type">WORKPLACE</column>
+        </insert>
+        <insert tableName="places" schemaName="coworking_schema">
+            <column name="place_name">Conference hall 0</column>
+            <column name="place_type">CONFERENCE_HALL</column>
+        </insert>
+        <insert tableName="places" schemaName="coworking_schema">
+            <column name="place_name">Conference hall 1</column>
+            <column name="place_type">CONFERENCE_HALL</column>
+        </insert>
+        <insert tableName="places" schemaName="coworking_schema">
+            <column name="place_name">Conference hall 2</column>
+            <column name="place_type">CONFERENCE_HALL</column>
+        </insert>
+        <insert tableName="places" schemaName="coworking_schema">
+            <column name="place_name">Conference hall 3</column>
+            <column name="place_type">CONFERENCE_HALL</column>
+        </insert>
+        <insert tableName="places" schemaName="coworking_schema">
+            <column name="place_name">Conference hall 4</column>
+            <column name="place_type">CONFERENCE_HALL</column>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

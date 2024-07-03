@@ -15,7 +15,7 @@ import java.util.Objects;
 @Getter
 @Builder
 @AllArgsConstructor
-public class Place implements Comparable<Place>{
+public class Place implements Comparable<Place> {
 
     /**
      * Идентификатор места
@@ -34,6 +34,7 @@ public class Place implements Comparable<Place>{
 
     /**
      * Отображение объекта Place в String
+     *
      * @return Отображение Place
      */
     @Override
@@ -44,7 +45,8 @@ public class Place implements Comparable<Place>{
 
     /**
      * Метод сравнивающий два объекта на равность
-     * @param o - другой объект
+     *
+     * @param o другой объект
      * @return true если объекты равны, иначе false
      */
     @Override
@@ -58,6 +60,7 @@ public class Place implements Comparable<Place>{
 
     /**
      * Отображеие текущего объекта в int
+     *
      * @return hashcode текущего объекта
      */
     @Override
@@ -70,6 +73,7 @@ public class Place implements Comparable<Place>{
 
     /**
      * Метод стравнения двух объектов Place
+     *
      * @param o объект для сравнения.
      * @return 0 если два объекта равны, положительное число
      * если вызывающий объект больше объекта, переданного в качестве параметра

@@ -22,10 +22,10 @@ public class UserValidator {
 
     /**
      * Валидирует данные для регистрацию нового пользователя
-     * @param username - имя пользователя
-     * @param password - пароль
-     * @throws UserRegistrationException в случае если данные для регистрации были введены неправильно
      *
+     * @param username имя пользователя
+     * @param password пароль
+     * @throws UserRegistrationException в случае если данные для регистрации были введены неправильно
      */
     public void validateUserRegistration(String username, String password) throws UserRegistrationException {
 
@@ -42,9 +42,10 @@ public class UserValidator {
 
     /**
      * Прозводит авторизацию пользователя, используя имя и пароль
-     * @param username - Имя пользователя
-     * @param password - Пароль
-     * @return - User объект авторизированного пользователя
+     *
+     * @param username Имя пользователя
+     * @param password Пароль
+     * @return User объект авторизированного пользователя
      * @throws UserAuthorisationException в случае если пользоватедя нет или он ввел неправильный пароль
      */
     public User getValidatedAuthorisedUser(String username, String password) throws UserAuthorisationException {
@@ -58,6 +59,7 @@ public class UserValidator {
 
     /**
      * Проверка на существование пользователя в в памяти
+     *
      * @param username Имя пользователя
      * @return true если существует, иначе false
      */
