@@ -3,6 +3,9 @@ package org.coworking.services;
 import lombok.AllArgsConstructor;
 import org.coworking.Utils.exceptions.BookedPlaceConflictsException;
 import org.coworking.Utils.exceptions.PlaceNamingException;
+import org.coworking.Utils.mappers.PlaceMapper;
+import org.coworking.annotations.Loggable;
+import org.coworking.dtos.AvailableSlotsDTO;
 import org.coworking.models.BookedPlace;
 import org.coworking.models.Place;
 import org.coworking.models.Slot;
@@ -11,16 +14,17 @@ import org.coworking.repositories.BookedPlaceRepository;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static org.coworking.Utils.ServletUtils.toSlotsDtoList;
 
 /**
  * Сервис для работы с бронированием мест
  */
+@Loggable
 @AllArgsConstructor
 public class BookedPlaceService {
 
@@ -77,6 +81,31 @@ public class BookedPlaceService {
     }
 
     /**
+     * Получение данных о свободных слотах для всех мест по определенной дате
+     * @param date дата для фильтрации
+     * @return список всех мест и их свободные слоты для определенной даты
+     */
+    public List<AvailableSlotsDTO> getAllAvailableDTOSlots(LocalDateTime date) {
+        return placeService.getAllPlaces().stream()
+                .map(place -> getAvailableSlotsDto(place, date))
+                .collect(Collectors.toList());
+    }
+
+
+    /**
+     * Создание DTO объекта, содержащий данные о доступных слотах и месте по определеннй дате
+     * @param place место
+     * @param date определенная дата
+     * @return объект AvailableSlotsDTO
+     */
+    private AvailableSlotsDTO getAvailableSlotsDto(Place place, LocalDateTime date) {
+        return AvailableSlotsDTO.builder()
+                .placeDTO(PlaceMapper.INSTANCE.placeToPlaceDto(place))
+                .slotDTOS(toSlotsDtoList(getAvailableSlots(place, date))).build();
+    }
+
+
+    /**
      * Бронирует конкретное место для пользователя начиная с определенной даты и заканчивая с другой определенной даты
      *
      * @param place конкретное место
@@ -88,6 +117,18 @@ public class BookedPlaceService {
         bookedPlaceRepository.save(place, user, from, to);
     }
 
+    /**
+     * Бронирует конкретное место для пользователя начиная с определенной даты и заканчивая с другой определенной даты
+     *
+     * @param bookedPlace данные о метсе и временном слоте
+     * @param user данные о пользователе
+     */
+    public void bookPlace(BookedPlace bookedPlace, User user){
+        Place place = bookedPlace.getPlace();
+        LocalDateTime start = bookedPlace.getSlot().getStart();
+        LocalDateTime end = bookedPlace.getSlot().getEnd();
+        bookPlace(place, user, start, end);
+    }
 
     /**
      * Удаляет Place и все связанные с ним BookedPlace

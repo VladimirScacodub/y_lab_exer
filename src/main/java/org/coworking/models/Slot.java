@@ -3,6 +3,7 @@ package org.coworking.models;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -12,8 +13,10 @@ import java.util.Objects;
  * Временой слот, который содержит временные границы бранирования места
  */
 @Getter
+
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class Slot implements Comparable<Slot> {
 
     /**

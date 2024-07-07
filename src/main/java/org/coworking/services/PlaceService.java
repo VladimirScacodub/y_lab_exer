@@ -2,6 +2,8 @@ package org.coworking.services;
 
 import lombok.AllArgsConstructor;
 import org.coworking.Utils.exceptions.PlaceNamingException;
+import org.coworking.annotations.Loggable;
+import org.coworking.dtos.PlaceDTO;
 import org.coworking.models.Place;
 import org.coworking.models.enums.PlaceType;
 import org.coworking.repositories.PlaceRepository;
@@ -14,6 +16,7 @@ import java.util.Optional;
 /**
  * Сервис для работы с местами и рабоющий с репозиторием Place, в которой по умолчанию создает ряд объектов Place
  */
+@Loggable
 @AllArgsConstructor
 public class PlaceService {
 
@@ -42,13 +45,22 @@ public class PlaceService {
     }
 
     /**
-     * Создает новый Place
+     * Создает новый Place в БД
      *
      * @param placeName имя для нового Place
      * @param placeType тип нового Place
      */
     public void createNewPlace(String placeName, PlaceType placeType) {
         placeRepository.save(placeName, placeType);
+    }
+
+    /**
+     * Создает новый Place в БД
+     *
+     * @param place содержит данноые для нового места
+     */
+    public void createNewPlace(Place place) {
+        createNewPlace(place.getPlaceName(), place.getPlaceType());
     }
 
     /**
@@ -69,9 +81,21 @@ public class PlaceService {
      * @param oldPlaceName имя существующего Place, данные которого будут изменены
      * @param newPlaceName новое имя для существующего Place
      * @param newPlaceType новый тип для существующего Place
+     * @throws PlaceNamingException В случае если Place null
      */
     public void updatePlace(String oldPlaceName, String newPlaceName, PlaceType newPlaceType) throws PlaceNamingException {
         findByName(oldPlaceName).orElseThrow(() -> new PlaceNamingException("Place name should not be null"));
         placeRepository.updatePlace(oldPlaceName, newPlaceName, newPlaceType);
+    }
+
+    /**
+     * Обновляет данные уже существующего Place
+     *
+     * @param oldPlaceName имя существующего Place, данные которого будут изменены
+     * @param place        новые данные для существующего Place
+     * @throws PlaceNamingException В случае если Place null
+     */
+    public void updatePlace(String oldPlaceName, Place place) throws PlaceNamingException {
+        updatePlace(oldPlaceName, place.getPlaceName(), place.getPlaceType());
     }
 }

@@ -1,6 +1,14 @@
 package utils;
 
+import jakarta.servlet.ReadListener;
+import jakarta.servlet.ServletInputStream;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.WriteListener;
 import liquibase.exception.LiquibaseException;
+import org.coworking.dtos.BookedPlaceDTO;
+import org.coworking.dtos.PlaceDTO;
+import org.coworking.dtos.SlotDTO;
+import org.coworking.dtos.UserDTO;
 import org.coworking.models.BookedPlace;
 import org.coworking.models.Place;
 import org.coworking.models.Slot;
@@ -11,6 +19,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.utility.DockerImageName;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -62,12 +71,13 @@ public class TestUtils {
             .placeName(TEST_PLACE_NAME_0)
             .placeType(PlaceType.WORKPLACE)
             .build();
+    public static final LocalDateTime TEST_LOCAL_DATE_TIME = parse("2024-06-22 11:31", ofPattern("yyyy-MM-dd HH:mm"));
 
     public static final String TEST_DATE = "21/06/2024";
 
     public static final Slot TEST_SLOT = Slot.builder()
-            .start(LocalDateTime.MIN)
-            .end(LocalDateTime.MAX)
+            .start(TEST_LOCAL_DATE_TIME)
+            .end(TEST_LOCAL_DATE_TIME.plusHours(2))
             .build();
 
     public static final BookedPlace TEST_BOOKED_PLACE_OBJECT = BookedPlace.builder()
@@ -85,6 +95,7 @@ public class TestUtils {
 
     @Container
     private static PostgreSQLContainer<?> postgreSQLContainer;
+
 
 
     public static String startTestContainer() throws SQLException, LiquibaseException {
@@ -105,6 +116,69 @@ public class TestUtils {
             postgreSQLContainer.stop();
     }
 
-    public static final LocalDateTime TEST_LOCAL_DATE_TIME = parse("2024-06-22 11:31", ofPattern("yyyy-MM-dd HH:mm"));
+
+    public static final ServletInputStream SERVLET_INPUT_STREAM = new ServletInputStream() {
+        @Override
+        public boolean isFinished() {
+            return true;
+        }
+
+        @Override
+        public boolean isReady() {
+            return false;
+        }
+
+        @Override
+        public void setReadListener(ReadListener readListener) {
+
+        }
+
+        @Override
+        public int read() throws IOException {
+            return 0;
+        }
+    };
+    public static final ServletOutputStream SERVLET_OUTPUT_STREAM = new ServletOutputStream() {
+        @Override
+        public boolean isReady() {
+            return false;
+        }
+
+        @Override
+        public void setWriteListener(WriteListener writeListener) {
+
+        }
+
+        @Override
+        public void write(int b) throws IOException {
+
+        }
+    };
+
+    public static final UserDTO TEST_ADMIN_DTO = UserDTO.builder()
+            .id(1)
+            .name(ADMIN_LOGIN)
+            .password(ADMIN_PASSWORD)
+            .role(Role.ADMIN)
+            .build();
+
+    public static final PlaceDTO TEST_PLACE_DTO = PlaceDTO.builder()
+            .id(1)
+            .placeName(TEST_PLACE_NAME_0)
+            .placeType("WORKPLACE")
+            .build();
+
+    public static final SlotDTO TEST_SLOT_DTO = SlotDTO.builder()
+            .id(1)
+            .start("2024-09-09 11:00")
+            .end("2024-09-09 15:00")
+            .build();
+
+    public static final BookedPlaceDTO TEST_BOOKED_PLACE_DTO = BookedPlaceDTO.builder()
+            .id(1)
+            .userDTO(TEST_ADMIN_DTO)
+            .placeDTO(TEST_PLACE_DTO)
+            .slotDTO(TEST_SLOT_DTO)
+            .build();
 
 }

@@ -3,6 +3,8 @@ package org.coworking.services.validators;
 import lombok.AllArgsConstructor;
 import org.coworking.Utils.exceptions.UserAuthorisationException;
 import org.coworking.Utils.exceptions.UserRegistrationException;
+import org.coworking.annotations.Loggable;
+import org.coworking.dtos.UserDTO;
 import org.coworking.models.User;
 import org.coworking.services.UserService;
 
@@ -12,6 +14,7 @@ import java.util.Objects;
 /**
  * Класс используется для валидации пользовательских данных
  */
+@Loggable
 @AllArgsConstructor
 public class UserValidator {
 
@@ -41,6 +44,16 @@ public class UserValidator {
     }
 
     /**
+     * Валидирует данные для регистрацию нового пользователя
+     *
+     * @param userDTO объект содержащий данные о пользователе
+     * @throws UserRegistrationException в случае если данные для регистрации были введены неправильно
+     */
+    public void validateUserRegistration(UserDTO userDTO) throws UserRegistrationException {
+        validateUserRegistration(userDTO.getName(), userDTO.getPassword());
+    }
+
+    /**
      * Прозводит авторизацию пользователя, используя имя и пароль
      *
      * @param username Имя пользователя
@@ -55,6 +68,16 @@ public class UserValidator {
             throw new UserAuthorisationException("Был введен неправильный пароль!");
         }
         return user;
+    }
+
+    /**
+     * Выполняет авторизацию пользователя
+     * @param userDTO объект содержащий имя и пароль пользователя
+     * @return авторизированный User объект
+     * @throws UserAuthorisationException если пользователя не прошел авторизацию
+     */
+    public User getValidatedAuthorisedUser(UserDTO userDTO) throws UserAuthorisationException {
+        return getValidatedAuthorisedUser(userDTO.getName(), userDTO.getPassword());
     }
 
     /**

@@ -1,8 +1,6 @@
 package org.coworking.repositories;
 
 import lombok.AllArgsConstructor;
-import org.coworking.Utils.JDBCUtils;
-import org.coworking.Utils.Mapper;
 import org.coworking.models.Slot;
 
 import java.sql.CallableStatement;
@@ -10,17 +8,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLType;
 import java.sql.Statement;
 import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.Stack;
 
 import static java.sql.Timestamp.valueOf;
 import static java.util.Optional.empty;
 import static org.coworking.Utils.JDBCUtils.rollback;
-import static org.coworking.Utils.Mapper.mapSlotRow;
+import static org.coworking.Utils.mappers.ResultSetMapper.mapSlotRow;
 
 /**
  * Реализация SlotRepository хранящая слоты в БД

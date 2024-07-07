@@ -5,18 +5,30 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
+import org.coworking.annotations.Loggable;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
+import static java.nio.file.Files.exists;
+import static java.util.Objects.nonNull;
+
+/**
+ * Класс содержащий полезные методы для работы с JDBC связью с БД
+ */
+@Loggable
 public class JDBCUtils {
+
+    private static Connection connection;
 
     /**
      * Получение Connection объекта, который связан с БД
@@ -25,12 +37,18 @@ public class JDBCUtils {
      * @throws SQLException если со связью с БД возникли пробемы
      */
     public static Connection getConnection() throws SQLException {
+        if (nonNull(connection))
+            return connection;
         Properties properties = getProperties();
         final String db_url = properties.getProperty("url");
         final String db_user = properties.getProperty("user");
         final String db_password = properties.getProperty("password");
-
-        Connection connection = DriverManager.getConnection(db_url, db_user, db_password);
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        connection = DriverManager.getConnection(db_url, db_user, db_password);
         connection.setAutoCommit(false);
         return connection;
     }
@@ -87,11 +105,20 @@ public class JDBCUtils {
      */
     private static Properties getProperties() {
         Properties properties = new Properties();
-        try (InputStream inputStream = new FileInputStream("src/main/resources/liquibase.properties")) {
+        String path = "src/main/resources/liquibase.properties";
+        if (!exists(Path.of(path))){
+            String currentPath = new File("").getAbsolutePath();
+            String parentPath = Paths.get(currentPath).getParent().toAbsolutePath().toString();
+            path = parentPath + "/webapps/coworking-service/WEB-INF/classes/liquibase.properties";
+        }
+
+        try (InputStream inputStream = new FileInputStream(path)) {
             properties.load(inputStream);
         } catch (IOException e) {
+            System.out.println(new File("").getAbsolutePath());
             System.out.println(e.getMessage());
         }
         return properties;
     }
+
 }

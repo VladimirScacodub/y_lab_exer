@@ -2,16 +2,27 @@ package org.coworking.services.validators;
 
 import lombok.AllArgsConstructor;
 import org.coworking.Utils.exceptions.BookedPlaceConflictsException;
+import org.coworking.annotations.Loggable;
+import org.coworking.dtos.BookedPlaceDTO;
+import org.coworking.dtos.PlaceDTO;
+import org.coworking.models.BookedPlace;
 import org.coworking.models.Place;
 import org.coworking.models.Slot;
+import org.coworking.models.User;
+import org.coworking.models.enums.Role;
 import org.coworking.services.BookedPlaceService;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Objects;
+
+import static java.util.Objects.isNull;
 
 /**
  * Класс бля валидации данных бронирования мест
  */
+@Loggable
 @AllArgsConstructor
 public class BookedPlaceValidator {
 
@@ -19,6 +30,30 @@ public class BookedPlaceValidator {
      * Зависимость используемая для получения данных об бронировании мест
      */
     BookedPlaceService bookedPlaceService;
+
+    /**
+     * Проверка на доступность пользователю удаления бронирования
+     *
+     * @param id   браонирования, которая должна быть удаленна
+     * @param user пользователб желающий удалить запись
+     * @throws BookedPlaceConflictsException если пользователю не разрещено удалять запись
+     */
+    public void validateCancelingBookedPlaceByNonAdmin(int id, User user) throws BookedPlaceConflictsException {
+        if (!isBookedPlaceOfUser(id, user) && !Objects.equals(user.getRole(), Role.ADMIN)) {
+            throw new BookedPlaceConflictsException("Удаление удаление данного BookedPlace невозможно из-за отсувствия записи или доступа к данной функции");
+        }
+    }
+
+    /**
+     * Проверяет если пользователб ответственен за бронирование места
+     *
+     * @param id   браонирования
+     * @param user пользователь
+     * @return true если пользователь ответственнен, false если нет
+     */
+    private boolean isBookedPlaceOfUser(int id, User user) {
+        return bookedPlaceService.getAllBookedPlacesByUser(user).stream().anyMatch(bookedPlace -> bookedPlace.getId() == id);
+    }
 
     /**
      * Валидация данных для нового бронирования доступного места
@@ -35,6 +70,64 @@ public class BookedPlaceValidator {
 
         if (someBookingConflicts(place, Slot.builder().start(from).end(to).build())) {
             throw new BookedPlaceConflictsException("Конфликт бронирования. Данное рабочее место уже было забронированно в данный промежуток времени!");
+        }
+    }
+
+    /**
+     * Валидация данных для нового бронирования доступного места
+     *
+     * @param bookedPlace
+     * @throws BookedPlaceConflictsException если возникает конфликт бронирования
+     */
+    public void validateBookingPlace(BookedPlace bookedPlace) throws BookedPlaceConflictsException {
+        Place place = bookedPlace.getPlace();
+        LocalDateTime start = bookedPlace.getSlot().getStart();
+        LocalDateTime end = bookedPlace.getSlot().getEnd();
+        validateBookingPlace(place, start, end);
+    }
+
+    /**
+     * Валидация временого формата для dateTime слота
+     * @param dateTime строка содержащая время и дату
+     * @throws BookedPlaceConflictsException если строка содержит неправильное время и дату
+     */
+    public void validateDateTimeFormat(String dateTime) throws BookedPlaceConflictsException {
+        try {
+            LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        } catch (DateTimeParseException e) {
+            throw new BookedPlaceConflictsException("Дата была введена не правильно");
+        }
+    }
+
+    /**
+     * Валидания полей из BookedPlaceDTO
+     * @param bookedPlaceDTO объект содержащий данные об бронировании
+     * @throws BookedPlaceConflictsException если есть конфликт бронирования
+     */
+    public void validateExistingBookedDtoFields(BookedPlaceDTO bookedPlaceDTO) throws BookedPlaceConflictsException {
+        if (isNull(bookedPlaceDTO.getPlaceDTO())) {
+            throw new BookedPlaceConflictsException("Требуетя указать placeDTO");
+        }
+        validateExistingPlaceDTOFields(bookedPlaceDTO.getPlaceDTO());
+        if (isNull(bookedPlaceDTO.getSlotDTO())) {
+            throw new BookedPlaceConflictsException("Требуется укзать временой слот slotDTO");
+        }
+    }
+
+    /**
+     * Валидация полей PlaceDTO
+     * @param placeDTO объект содержащий данные о местах
+     * @throws BookedPlaceConflictsException если возникает проблема с полями PlaceDTO
+     */
+    private static void validateExistingPlaceDTOFields(PlaceDTO placeDTO) throws BookedPlaceConflictsException {
+        if (placeDTO.getId() == 0) {
+            throw new BookedPlaceConflictsException("Требуетя указать id для placeDTO");
+        }
+        if (isNull(placeDTO.getPlaceName())) {
+            throw new BookedPlaceConflictsException("Требуетя указать placeName для placeDTO");
+        }
+        if (isNull(placeDTO.getPlaceType())) {
+            throw new BookedPlaceConflictsException("Требуетя указать placeType для placeDTO");
         }
     }
 
