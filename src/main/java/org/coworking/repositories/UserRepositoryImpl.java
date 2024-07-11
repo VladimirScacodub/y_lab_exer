@@ -1,8 +1,7 @@
 package org.coworking.repositories;
 
 import lombok.AllArgsConstructor;
-import org.coworking.Utils.JDBCUtils;
-import org.coworking.Utils.Mapper;
+import org.coworking.Utils.mappers.ResultSetMapper;
 import org.coworking.models.User;
 import org.coworking.models.enums.Role;
 
@@ -80,7 +79,7 @@ public class UserRepositoryImpl implements UserRepository {
             statement = connection.prepareStatement(selectQuery);
             statement.setString(1,username);
             ResultSet resultSet = statement.executeQuery();
-            return resultSet.next() ? Optional.ofNullable(Mapper.mapUserRow(resultSet)) : Optional.empty();
+            return resultSet.next() ? Optional.ofNullable(ResultSetMapper.mapUserRow(resultSet)) : Optional.empty();
         } catch (SQLException e) {
             return Optional.empty();
         }
@@ -99,7 +98,7 @@ public class UserRepositoryImpl implements UserRepository {
             statement = connection.createStatement();
             var resultSet = statement.executeQuery(selectQuery);
             while (resultSet.next()){
-                userList.add(Mapper.mapUserRow(resultSet));
+                userList.add(ResultSetMapper.mapUserRow(resultSet));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

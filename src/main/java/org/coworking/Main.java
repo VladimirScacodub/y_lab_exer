@@ -1,6 +1,8 @@
 package org.coworking;
 
 import liquibase.exception.LiquibaseException;
+import org.coworking.Utils.mappers.UserMapper;
+import org.coworking.dtos.UserDTO;
 import org.coworking.repositories.BookedPlaceRepositoryImpl;
 import org.coworking.repositories.PlaceRepositoryImpl;
 import org.coworking.repositories.SlotRepositoryImpl;
@@ -32,6 +34,11 @@ public class Main {
         Connection connection = getConnection();
         startLiquibase(connection);
         System.out.println("Подключение было совершенно");
+
+        UserDTO userDTO = new UserDTO();
+
+        UserMapper.INSTANCE.userDtoToUser(userDTO);
+
         MenuOutput menuOutput = getMenuOutput(connection);
 
         menuOutput.performMenu();

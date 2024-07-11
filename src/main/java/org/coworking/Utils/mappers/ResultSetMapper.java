@@ -1,5 +1,6 @@
-package org.coworking.Utils;
+package org.coworking.Utils.mappers;
 
+import org.coworking.annotations.Loggable;
 import org.coworking.models.BookedPlace;
 import org.coworking.models.Place;
 import org.coworking.models.Slot;
@@ -13,7 +14,8 @@ import java.sql.SQLException;
 /**
  * Класс, который предоставляет возможности по мэппингу строк из БД в конкретные объекты
  */
-public class Mapper {
+@Loggable
+public class ResultSetMapper {
 
     /**
      * Производит мэппинг строки из ResultSet в объект User

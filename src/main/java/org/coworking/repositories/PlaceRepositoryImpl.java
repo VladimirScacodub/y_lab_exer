@@ -15,7 +15,7 @@ import java.util.Optional;
 
 import static java.util.Optional.empty;
 import static org.coworking.Utils.JDBCUtils.rollback;
-import static org.coworking.Utils.Mapper.mapPlaceRow;
+import static org.coworking.Utils.mappers.ResultSetMapper.mapPlaceRow;
 
 /**
  * Реализация интерфейса PlaceRepository, которая хранит данные в БД

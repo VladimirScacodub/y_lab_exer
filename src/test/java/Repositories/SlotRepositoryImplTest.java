@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static utils.TestUtils.TEST_LOCAL_DATE_TIME;
+import static utils.TestUtils.TEST_SLOT;
 import static utils.TestUtils.startTestContainer;
 import static utils.TestUtils.stopTestContainers;
 
@@ -76,6 +77,12 @@ class SlotRepositoryImplTest {
         String actualData = TimeUtils.getFormatedTime(TEST_LOCAL_DATE_TIME);
 
         assertThat(actualData).isEqualTo(EXPECTED_DATA);
+    }
+
+    @Test
+    @DisplayName("Тест на проверку хешкода слотов")
+    void hashCodeShouldBeTheSameTest(){
+        assertThat(TEST_SLOT.hashCode()).isEqualTo(TEST_SLOT.hashCode());
     }
 
 }

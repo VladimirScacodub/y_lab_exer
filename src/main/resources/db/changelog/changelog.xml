@@ -15,5 +15,6 @@
     <include file="tables-insertion/007-insert-table-slots.xml" relativeToChangelogFile="true"/>
     <include file="tables-insertion/008-insert-table-booked-places.xml" relativeToChangelogFile="true"/>
     <include file="trigger-creation/009-create-trigger-booked-places-slots.xml" relativeToChangelogFile="true"/>
+    <include file="tables-creation/010-create-table-user-action-audit.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

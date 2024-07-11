@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        logicalFilePath="db/changelog.xml">
+    <changeSet id="010-create-table-user-action-audit" author="Scacodub Vladimir">
+        <createSequence sequenceName="audit_id_seq"
+                        dataType="int"
+                        startValue="1"
+                        incrementBy="1"
+                        schemaName="coworking_schema"/>
+        <createTable tableName="user_action_audit" schemaName="coworking_schema">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="action_description" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="datetime" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="user_action_audit"
+                                 baseColumnNames="user_id"
+                                 baseTableSchemaName="coworking_schema"
+                                 constraintName="fk_audit_users"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 referencedTableSchemaName="coworking_schema"
+                                 onDelete="CASCADE"/>
+        <addDefaultValue tableName="user_action_audit"
+                         columnName="id"
+                         defaultValueSequenceNext="booked_places_id_seq"
+                         schemaName="coworking_schema"/>
+        <setColumnRemarks tableName="user_action_audit"
+                          columnName="id"
+                          remarks="Первичный ключ, использующийся для идентификации действий пользователя"
+                          schemaName="coworking_schema"/>
+        <setColumnRemarks tableName="user_action_audit"
+                          columnName="user_id"
+                          remarks="Внешний ключ, использующийся для указания на пользователя, которому принадлежит данное действие"
+                          schemaName="coworking_schema"/>
+        <setColumnRemarks tableName="user_action_audit"
+                          columnName="action_description"
+                          remarks="Описание, того что делал пользователь"
+                          schemaName="coworking_schema"/>
+        <setColumnRemarks tableName="user_action_audit"
+                          columnName="datetime"
+                          remarks="Дата и время выполненного действия пользователем"
+                          schemaName="coworking_schema"/>
+    </changeSet>
+</databaseChangeLog>

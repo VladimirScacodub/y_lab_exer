@@ -2,7 +2,10 @@ package org.coworking.services.validators;
 
 import lombok.AllArgsConstructor;
 import org.coworking.Utils.exceptions.PlaceNamingException;
+import org.coworking.annotations.Loggable;
+import org.coworking.dtos.PlaceDTO;
 import org.coworking.models.Place;
+import org.coworking.models.enums.PlaceType;
 import org.coworking.services.PlaceService;
 
 import java.util.Objects;
@@ -10,6 +13,7 @@ import java.util.Objects;
 /**
  * Класс используется для валидации данных рабочих мест и конференц-залов
  */
+@Loggable
 @AllArgsConstructor
 public class PlaceValidator {
 
@@ -31,6 +35,16 @@ public class PlaceValidator {
     }
 
     /**
+     * Проверяет отсуствие места с указанным именем
+     *
+     * @param placeDTO объект содержащий имя места
+     * @throws PlaceNamingException в случае если такое место существует
+     */
+    public void validateExistedPlaceName(PlaceDTO placeDTO) throws PlaceNamingException {
+        validateExistedPlaceName(placeDTO.getPlaceName());
+    }
+
+    /**
      * Валидирует данные используемые для обновления рабочего места
      *
      * @param placeName    имя места, которое используется для поиска
@@ -44,6 +58,31 @@ public class PlaceValidator {
         if (doesAnotherPlaceWithThisNameExists(placeName, oldPlace)) {
             throw new PlaceNamingException("Другое place с таким именем уже существует!");
         }
+    }
+
+    /**
+     * Проверяет на существование типа места
+     *
+     * @param placeType тип места
+     * @throws RuntimeException если такого места нет
+     */
+    public void validateExistingPlaceType(String placeType) throws RuntimeException {
+        try {
+            PlaceType.valueOf(placeType);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Такого типа не существует");
+        }
+    }
+
+    /**
+     * Валидирует данные используемые для обновления рабочего места
+     *
+     * @param placeName имя старого рабочего места
+     * @param placeDTO объект содерщащий новые данные для обновления
+     * @throws PlaceNamingException если места с таким именем не сущестует
+     */
+    public void validatePlaceUpdating(String placeName, PlaceDTO placeDTO) throws PlaceNamingException {
+        validatePlaceUpdating(placeName, placeDTO.getPlaceName());
     }
 
     /**

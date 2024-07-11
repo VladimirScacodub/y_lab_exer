@@ -1,18 +1,15 @@
 package org.coworking.repositories;
 
 import lombok.AllArgsConstructor;
-import org.coworking.Utils.JDBCUtils;
 import org.coworking.models.BookedPlace;
 import org.coworking.models.Place;
 import org.coworking.models.User;
 
-import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +17,7 @@ import java.util.Optional;
 
 import static java.util.Optional.empty;
 import static org.coworking.Utils.JDBCUtils.rollback;
-import static org.coworking.Utils.Mapper.mapBookedPlace;
-import static org.coworking.Utils.Mapper.mapPlaceRow;
+import static org.coworking.Utils.mappers.ResultSetMapper.mapBookedPlace;
 
 /**
  * Реализация инерфейса BookedPlaceRepository, которая работает с БД
