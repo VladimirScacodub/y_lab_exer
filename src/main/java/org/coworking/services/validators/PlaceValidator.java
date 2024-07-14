@@ -7,6 +7,7 @@ import org.coworking.dtos.PlaceDTO;
 import org.coworking.models.Place;
 import org.coworking.models.enums.PlaceType;
 import org.coworking.services.PlaceService;
+import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
@@ -15,6 +16,7 @@ import java.util.Objects;
  */
 @Loggable
 @AllArgsConstructor
+@Component
 public class PlaceValidator {
 
     /**
@@ -55,7 +57,7 @@ public class PlaceValidator {
         Place oldPlace = placeService.findByName(placeName)
                 .orElseThrow(() -> new PlaceNamingException("Рабочее место с таким именем не существует!"));
 
-        if (doesAnotherPlaceWithThisNameExists(placeName, oldPlace)) {
+        if (doesAnotherPlaceWithThisNameExists(newPlaceName, oldPlace)) {
             throw new PlaceNamingException("Другое place с таким именем уже существует!");
         }
     }

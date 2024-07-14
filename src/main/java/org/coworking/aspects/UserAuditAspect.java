@@ -1,32 +1,37 @@
 package org.coworking.aspects;
 
-import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
-import org.coworking.Utils.JDBCUtils;
-import org.coworking.Utils.ServletUtils;
+import org.coworking.dtos.MessageDTO;
 import org.coworking.models.User;
 import org.coworking.repositories.UserActionAuditRepository;
-import org.coworking.repositories.UserActionAuditRepositoryImpl;
-import org.coworking.repositories.UserRepositoryImpl;
+import org.coworking.repositories.impl.UserRepositoryImpl;
 import org.coworking.services.UserService;
+import org.coworking.services.validators.UserValidator;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletResponse;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.Optional;
-
-import static org.coworking.Utils.ServletUtils.isUserAuthorised;
+import java.util.stream.Stream;
 
 /**
  * Аспект, который выполняет аудит основных действий пользователя
  */
 @Aspect
+@Component
+@RequiredArgsConstructor
 public class UserAuditAspect {
 
-    private static final String LOGIN_USER_DESCRIPTION = "Пользователь вошел в систему";
+    private final Connection connection;
+
+    private final UserValidator userValidator;
 
     private static final String REGISTER_USER_DESCRIPTION = "Пользователь зарегистрировался в системе";
 
@@ -46,82 +51,10 @@ public class UserAuditAspect {
 
     private static final String ADMIN_DELETING_PLACE_DESCRIPTION = "Администратор удалил место";
 
-    public UserAuditAspect() throws SQLException {
-    }
-
-    /**
-     * Pointcut авторизации пользователя
-     */
-    @Pointcut("within(@org.coworking.annotations.LoginAudit *) && execution(* * (..))")
-    public void annotatedByLoginAudit() {
-    }
-
-    /**
-     * Pointcut регистрации пользователя
-     */
-    @Pointcut("within(@org.coworking.annotations.RegisterAudit *) && execution(* * (..))")
-    public void annotatedByRegisterAudit() {
-    }
-
-    /**
-     * Pointcut бронирования мест
-     */
-    @Pointcut("within(@org.coworking.annotations.BookPlaceAudit *) && execution(* * (..))")
-    public void annotatedByBookPlaceAudit() {
-    }
-
-    /**
-     * Pointcut отмены бронирования
-     */
-    @Pointcut("within(@org.coworking.annotations.DeleteBookingAudit *) && execution(* * (..))")
-    public void annotatedByDeleteBookingAudit() {
-    }
-
-    /**
-     * Pointcut просмотра бронирования
-     */
-    @Pointcut("within(@org.coworking.annotations.BookingViewAudit *) && execution(* * (..))")
-    public void annotatedByBookingViewAudit() {
-    }
-
-    /**
-     * Pointcut простмотра доступных слотов
-     */
-    @Pointcut("within(@org.coworking.annotations.AvailableSlotsAudit *) && execution(* * (..))")
-    public void annotatedByAvailableSlotsAudit() {
-    }
-
-    /**
-     * Pointcut просмотра мест
-     */
-    @Pointcut("within(@org.coworking.annotations.PlacesViewAudit *) && execution(* * (..))")
-    public void annotatedByPlaceViewAudit() {}
-
-    /**
-     * Pointcut создания места
-     */
-    @Pointcut("within(@org.coworking.annotations.PlaceCreationAudit *) && execution(* * (..))")
-    public void annotatedByPlaceCreationAudit() {
-    }
-
-    /**
-     * Pointcut обновления места
-     */
-    @Pointcut("within(@org.coworking.annotations.PlaceUpdatingAudit *) && execution(* * (..))")
-    public void annotatedByPlaceUpdatingAudit() {
-    }
-
-    /**
-     * Pointcut удаления места
-     */
-    @Pointcut("within(@org.coworking.annotations.PlaceDeletingAudit *) && execution(* * (..))")
-    public void annotatedByPlaceDeletingAudit() {
-    }
-
     /**
      * Advice, который выполняет инструкции по аудированию удалени места пользователем
      */
-    @Around("annotatedByPlaceDeletingAudit()")
+    @Around("bean(placeController) && execution(* org.coworking.controllers.PlaceController.deletePlace(..))")
     public Object placeDeletingAudit(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         return performPlaceAudit(proceedingJoinPoint, ADMIN_DELETING_PLACE_DESCRIPTION);
     }
@@ -129,7 +62,7 @@ public class UserAuditAspect {
     /**
      * Advice, который выполняет инструкции по аудированию удалени места пользователем
      */
-    @Around("annotatedByPlaceUpdatingAudit()")
+    @Around("bean(placeController) && execution(* org.coworking.controllers.PlaceController.updatePlace(..))")
     public Object placeUpdatingAudit(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         return performPlaceAudit(proceedingJoinPoint, ADMIN_UPDATING_PLACE_DESCRIPTION);
     }
@@ -137,7 +70,7 @@ public class UserAuditAspect {
     /**
      * Advice, который выполняет инструкции по аудированию создания места
      */
-    @Around("annotatedByPlaceCreationAudit()")
+    @Around("bean(placeController) && execution(* org.coworking.controllers.PlaceController.savePlace(..))")
     public Object placeCreationAudit(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         return performPlaceAudit(proceedingJoinPoint, ADMIN_CREATION_PLACE_DESCRIPTION);
     }
@@ -145,7 +78,7 @@ public class UserAuditAspect {
     /**
      * Advice, который выполняет инструкции по аудированию просмотра мест
      */
-    @Around("annotatedByPlaceViewAudit()")
+    @Around("bean(placeController) && execution(* org.coworking.controllers.PlaceController.getAllPlaces(..))")
     public Object placeViewAudit(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         return performPlaceAudit(proceedingJoinPoint, USER_VIEW_PLACES_DESCRIPTION);
     }
@@ -153,7 +86,7 @@ public class UserAuditAspect {
     /**
      * Advice, который выполняет инструкции по аудированию простмотра доступных мест
      */
-    @Around("annotatedByAvailableSlotsAudit()")
+    @Around("bean(bookedPlaceController) && execution(* org.coworking.controllers.BookedPlaceController.getAvailableBookedPlaces(..))")
     public Object availableSlotsAudit(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         return performPlaceAudit(proceedingJoinPoint, USER_AVAILABLE_SLOTS_DESCRIPTION);
     }
@@ -161,7 +94,7 @@ public class UserAuditAspect {
     /**
      * Advice, который выполняет инструкции по аудированию просмотра бронирований
      */
-    @Around("annotatedByBookingViewAudit()")
+    @Around("bean(bookedPlaceController) && (execution(* org.coworking.controllers.BookedPlaceController.getAllBooking(..)) || execution(* org.coworking.controllers.BookedPlaceController.getCurrentUserBooking(..)))")
     public Object viewBookingAudit(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         return performPlaceAudit(proceedingJoinPoint, USER_BOOKING_VIEW_DESCRIPTION);
     }
@@ -169,7 +102,7 @@ public class UserAuditAspect {
     /**
      * Advice, который выполняет инструкции по аудированию удаления бронирования
      */
-    @Around("annotatedByDeleteBookingAudit()")
+    @Around("bean(bookedPlaceController) && execution(* org.coworking.controllers.BookedPlaceController.deleteBookedPlace(..))")
     public Object deleteBookingAudit(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         return performPlaceAudit(proceedingJoinPoint, USER_DELETE_BOOKING_DESCRIPTION);
     }
@@ -177,7 +110,7 @@ public class UserAuditAspect {
     /**
      * Advice, который выполняет инструкции по аудированию создания нового бронирования
      */
-    @Around("annotatedByBookPlaceAudit()")
+    @Around("bean(bookedPlaceController) && execution(* org.coworking.controllers.BookedPlaceController.bookPlace(..))")
     public Object bookPlaceAudit(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         return performPlaceAudit(proceedingJoinPoint, USER_BOOKED_PLACE_DESCRIPTION);
     }
@@ -185,37 +118,20 @@ public class UserAuditAspect {
     /**
      * Advice, который выполняет инструкции по аудированию регистрции пользователя
      */
-    @Around("annotatedByRegisterAudit()")
+    @Around("bean(userController) && execution(* org.coworking.controllers.UserController.registerUser(..))")
     public Object registerAudit(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-        var result = proceedingJoinPoint.proceed();
-        HttpServletResponse response = getResponse(proceedingJoinPoint);
-        String username = response.getHeader("username");
-
-        if (isStatusIsOk(response)) {
+        Object proceededObject = proceedingJoinPoint.proceed();
+        var result = (ResponseEntity<MessageDTO>) proceededObject;
+        String username = result.getHeaders().getFirst("name");
+        if (isStatusIsOk(result)) {
             var userOptional = getUserByName(username);
             userOptional.ifPresent(user -> makeAudit(REGISTER_USER_DESCRIPTION, user));
         }
         return result;
     }
 
-    /**
-     * Advice, который выполняет инструкции по аудированию авторизации пользователя
-     */
-    @Around("annotatedByLoginAudit()")
-    public Object loginAudit(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-        User previousUser = null;
-        if (isUserAuthorised()) {
-            previousUser = ServletUtils.getCurrentUser();
-        }
-        Object proceed = proceedingJoinPoint.proceed();
-        User newUser = null;
-        if (isUserAuthorised()) {
-            newUser = ServletUtils.getCurrentUser();
-        }
-        if (!Objects.equals(newUser, previousUser) && isUserAuthorised()) {
-            makeAudit(LOGIN_USER_DESCRIPTION, newUser);
-        }
-        return proceed;
+    private static boolean isStatusIsOk(ResponseEntity<?> result) {
+        return result.getStatusCode() == HttpStatus.OK;
     }
 
     /**
@@ -226,19 +142,29 @@ public class UserAuditAspect {
      * @throws Throwable в случае если возникнет проблема
      */
     private Object performPlaceAudit(ProceedingJoinPoint proceedingJoinPoint, String description) throws Throwable {
-        var result = proceedingJoinPoint.proceed();
-        HttpServletResponse response = getResponse(proceedingJoinPoint);
-        if (isStatusIsOk(response)) {
-            User user = ServletUtils.getCurrentUser();
+        var result = (ResponseEntity<?>) proceedingJoinPoint.proceed();
+        if (isStatusIsOk(result)) {
+            String credentials = getAuthCredentials(proceedingJoinPoint);
+            User user = userValidator.authoriseUser(credentials);
             makeAudit(description, user);
         }
         return result;
     }
 
+    private static String getAuthCredentials(ProceedingJoinPoint proceedingJoinPoint) {
+        Object[] args = proceedingJoinPoint.getArgs();
+        return Stream.of(args)
+                .filter(o -> o instanceof String)
+                .map(o -> (String)o)
+                .filter(s -> s.toLowerCase().contains("basic"))
+                .findAny()
+                .orElseThrow();
+    }
+
     /**
      * Репозиторий, который позволяет рпаботать с хранилищем записией о событияъ
      */
-    private UserActionAuditRepository userActionAuditRepository;
+    private final UserActionAuditRepository userActionAuditRepository;
 
     /**
      * Запись события в БД
@@ -246,13 +172,6 @@ public class UserAuditAspect {
      * @param user Пользователь который совершил дейстиве
      */
     public void makeAudit(String description, User user) {
-        if (Objects.isNull(userActionAuditRepository)){
-            try {
-                userActionAuditRepository = new UserActionAuditRepositoryImpl(JDBCUtils.getConnection());
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
         userActionAuditRepository.save(user, description, LocalDateTime.now());
     }
 
@@ -266,22 +185,13 @@ public class UserAuditAspect {
     }
 
     /**
-     * Проверяет если статус HTTP ответа равен OK
-     * @param response HTTP ответ
-     * @return true если равен, иначе false
-     */
-    private static boolean isStatusIsOk(HttpServletResponse response) {
-        return response.getStatus() == HttpServletResponse.SC_OK;
-    }
-
-    /**
      * Получение объект User из БД по его имени
      * @param username имя пользователя
      * @return обернутый в Optional объект User
      * @throws SQLException если возникла ошибка при связи с БД
      */
-    public Optional<User> getUserByName(String username) throws SQLException {
-        return new UserService(new UserRepositoryImpl(JDBCUtils.getConnection())).getUserByName(username);
+    public Optional<User> getUserByName(String username){
+        return new UserService(new UserRepositoryImpl(connection)).getUserByName(username);
     }
 
 }

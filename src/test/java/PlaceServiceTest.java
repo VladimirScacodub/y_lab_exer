@@ -1,13 +1,13 @@
 import liquibase.exception.LiquibaseException;
-import org.coworking.Utils.JDBCUtils;
 import org.coworking.Utils.exceptions.PlaceNamingException;
-import org.coworking.repositories.PlaceRepositoryImpl;
+import org.coworking.repositories.impl.PlaceRepositoryImpl;
 import org.coworking.services.PlaceService;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import utils.TestUtils;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -30,7 +30,7 @@ public class PlaceServiceTest {
     @BeforeAll
     static void setDatabase() throws SQLException, LiquibaseException {
         connection = DriverManager.getConnection(startTestContainer());
-        JDBCUtils.startLiquibase(connection);
+        TestUtils.startLiquibase(connection);
     }
 
     @AfterAll

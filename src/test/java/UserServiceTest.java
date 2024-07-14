@@ -1,13 +1,13 @@
 import liquibase.exception.LiquibaseException;
 import org.assertj.core.api.Assertions;
-import org.coworking.Utils.JDBCUtils;
-import org.coworking.repositories.UserRepositoryImpl;
+import org.coworking.repositories.impl.UserRepositoryImpl;
 import org.coworking.services.UserService;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import utils.TestUtils;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -27,7 +27,7 @@ public class UserServiceTest {
     @BeforeAll
     static void setDatabase() throws SQLException, LiquibaseException {
         connection = DriverManager.getConnection(startTestContainer());
-        JDBCUtils.startLiquibase(connection);
+        TestUtils.startLiquibase(connection);
     }
 
     @AfterAll

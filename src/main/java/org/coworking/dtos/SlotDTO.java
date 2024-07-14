@@ -1,11 +1,10 @@
 package org.coworking.dtos;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 /**
  * Клас объектов для передачи данных о временных слотах
@@ -24,11 +23,13 @@ public class SlotDTO {
     /**
      * Начало бронирования
      */
+    @ApiModelProperty(example = "2024-06-26 12:00")
     private String start;
 
     /**
      * Конец бронирования
      */
+    @ApiModelProperty(example = "2024-06-26 14:00")
     private String end;
 
 }

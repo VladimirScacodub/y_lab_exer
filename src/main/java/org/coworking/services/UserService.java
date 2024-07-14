@@ -5,16 +5,16 @@ import org.coworking.annotations.Loggable;
 import org.coworking.models.User;
 import org.coworking.models.enums.Role;
 import org.coworking.repositories.UserRepository;
+import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
  * Сервис для работы с User и работающий с репозиторием пользователей, где по умолчанию создается пользователь admin
  */
 @Loggable
+@Service
 @AllArgsConstructor
 public class UserService {
 

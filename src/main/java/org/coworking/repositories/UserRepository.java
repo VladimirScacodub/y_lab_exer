@@ -2,8 +2,6 @@ package org.coworking.repositories;
 
 import org.coworking.models.User;
 import org.coworking.models.enums.Role;
-
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 

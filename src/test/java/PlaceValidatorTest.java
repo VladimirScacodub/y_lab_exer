@@ -57,7 +57,7 @@ public class PlaceValidatorTest {
                 .thenReturn(Optional.of(PLACE_TEST_OBJECT));
         Mockito.when(placeService.getAllPlaces()).thenReturn(TEST_LIST_OF_PLACE);
 
-        Assertions.assertThatThrownBy(()->placeValidator.validatePlaceUpdating(EXISTENT_NAME, NEW_NAME_STRING))
+        Assertions.assertThatThrownBy(()->placeValidator.validatePlaceUpdating(EXISTENT_NAME, EXISTENT_NAME))
                 .isInstanceOf(PlaceNamingException.class);
     }
 }

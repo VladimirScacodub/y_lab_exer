@@ -11,6 +11,7 @@ import org.coworking.models.Slot;
 import org.coworking.models.User;
 import org.coworking.models.enums.Role;
 import org.coworking.services.BookedPlaceService;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -24,12 +25,13 @@ import static java.util.Objects.isNull;
  */
 @Loggable
 @AllArgsConstructor
+@Component
 public class BookedPlaceValidator {
 
     /**
      * Зависимость используемая для получения данных об бронировании мест
      */
-    BookedPlaceService bookedPlaceService;
+    private BookedPlaceService bookedPlaceService;
 
     /**
      * Проверка на доступность пользователю удаления бронирования

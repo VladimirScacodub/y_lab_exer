@@ -4,13 +4,16 @@ import lombok.AllArgsConstructor;
 import org.coworking.Utils.exceptions.BookedPlaceConflictsException;
 import org.coworking.Utils.exceptions.PlaceNamingException;
 import org.coworking.Utils.mappers.PlaceMapper;
+import org.coworking.Utils.mappers.SlotMapper;
 import org.coworking.annotations.Loggable;
 import org.coworking.dtos.AvailableSlotsDTO;
+import org.coworking.dtos.SlotDTO;
 import org.coworking.models.BookedPlace;
 import org.coworking.models.Place;
 import org.coworking.models.Slot;
 import org.coworking.models.User;
 import org.coworking.repositories.BookedPlaceRepository;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -19,13 +22,13 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.coworking.Utils.ServletUtils.toSlotsDtoList;
 
 /**
  * Сервис для работы с бронированием мест
  */
 @Loggable
 @AllArgsConstructor
+@Service
 public class BookedPlaceService {
 
     /**
@@ -104,6 +107,17 @@ public class BookedPlaceService {
                 .slotDTOS(toSlotsDtoList(getAvailableSlots(place, date))).build();
     }
 
+    /**
+     * Трансформирует список слотов в SlotsDTO список
+     *
+     * @param slots список слотов
+     * @return SlotsDTO список
+     */
+    public static List<SlotDTO> toSlotsDtoList(List<Slot> slots){
+        return slots.stream()
+                .map(SlotMapper.INSTANCE::slotToSlotDto)
+                .collect(Collectors.toList());
+    }
 
     /**
      * Бронирует конкретное место для пользователя начиная с определенной даты и заканчивая с другой определенной даты

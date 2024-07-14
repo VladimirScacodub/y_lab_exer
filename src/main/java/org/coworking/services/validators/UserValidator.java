@@ -1,13 +1,19 @@
 package org.coworking.services.validators;
 
 import lombok.AllArgsConstructor;
+import org.coworking.Utils.exceptions.ForbiddenAccessException;
+import org.coworking.Utils.exceptions.RequiredAuthorisationException;
 import org.coworking.Utils.exceptions.UserAuthorisationException;
 import org.coworking.Utils.exceptions.UserRegistrationException;
 import org.coworking.annotations.Loggable;
 import org.coworking.dtos.UserDTO;
 import org.coworking.models.User;
+import org.coworking.models.enums.Role;
 import org.coworking.services.UserService;
+import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
 
@@ -15,6 +21,7 @@ import java.util.Objects;
  * Класс используется для валидации пользовательских данных
  */
 @Loggable
+@Component
 @AllArgsConstructor
 public class UserValidator {
 
@@ -91,4 +98,37 @@ public class UserValidator {
         return users.stream().anyMatch(user -> Objects.equals(user.getName(), username));
     }
 
+    public User authoriseUser(String authorizationHeaderValue) throws UserAuthorisationException, RequiredAuthorisationException {
+        if (Objects.isNull(authorizationHeaderValue)){
+            throw new RequiredAuthorisationException("Требуется авторизация");
+        }
+        UserDTO build = getUserDTOWithDecodedCredentials(authorizationHeaderValue);
+
+        return getValidatedAuthorisedUser(build);
+    }
+    public User authorizeAdmin(String authorizationHeaderValue) throws RequiredAuthorisationException, UserAuthorisationException, ForbiddenAccessException {
+        User user = authoriseUser(authorizationHeaderValue);
+        checkRequiredAdminRole(user);
+        return user;
+    }
+
+    public UserDTO getUserDTOWithDecodedCredentials(String authorizationHeaderValue) {
+        String[] decodedCredentials = getDecodedCredentials(authorizationHeaderValue);
+        return UserDTO.builder()
+                .name(decodedCredentials[0])
+                .password(decodedCredentials[1])
+                .build();
+    }
+
+    private String[] getDecodedCredentials(String authorizationHeaderValue) {
+        byte[] decoded = Base64.getDecoder()
+                .decode(authorizationHeaderValue.split(" ")[1]);
+        return new String(decoded, StandardCharsets.UTF_8).split(":");
+    }
+
+    public void checkRequiredAdminRole(User user) throws ForbiddenAccessException {
+        if(!Objects.equals(user.getRole(), Role.ADMIN)){
+            throw new ForbiddenAccessException("Пользователь должен иметь права администратора!");
+        }
+    }
 }
