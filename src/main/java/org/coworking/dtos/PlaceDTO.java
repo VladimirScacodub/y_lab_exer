@@ -1,11 +1,11 @@
 package org.coworking.dtos;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.coworking.models.enums.PlaceType;
 
 /**
  * Клас объектов для передачи данных о местах
@@ -25,11 +25,13 @@ public class PlaceDTO {
     /**
      * имя места
      */
+    @ApiModelProperty(example = "Workplace_example")
     private String placeName;
 
     /**
      * Тип места
      */
+    @ApiModelProperty(example = "WORKPLACE")
     private String placeType;
 
 }

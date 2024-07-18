@@ -13,7 +13,6 @@ import java.util.Objects;
  * Временой слот, который содержит временные границы бранирования места
  */
 @Getter
-
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

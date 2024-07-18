@@ -1,5 +1,6 @@
 package org.coworking.dtos;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,6 +28,7 @@ public class BookedPlaceDTO {
     /**
      * Данные о пользователе
      */
+    @ApiModelProperty(hidden = true)
     private UserDTO userDTO;
 
     /**

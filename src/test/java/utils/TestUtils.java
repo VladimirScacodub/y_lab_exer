@@ -1,10 +1,11 @@
 package utils;
 
-import jakarta.servlet.ReadListener;
-import jakarta.servlet.ServletInputStream;
-import jakarta.servlet.ServletOutputStream;
-import jakarta.servlet.WriteListener;
+
+import liquibase.Liquibase;
+import liquibase.database.DatabaseFactory;
+import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
+import liquibase.resource.ClassLoaderResourceAccessor;
 import org.coworking.dtos.BookedPlaceDTO;
 import org.coworking.dtos.PlaceDTO;
 import org.coworking.dtos.SlotDTO;
@@ -19,8 +20,14 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.utility.DockerImageName;
 
+import javax.servlet.ReadListener;
+import javax.servlet.ServletInputStream;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -32,6 +39,8 @@ public class TestUtils {
     public static final String EXISTENT_NAME = "testName";
 
     public static final Place PLACE_TEST_OBJECT = new Place(1, EXISTENT_NAME, PlaceType.WORKPLACE);
+
+    public static final String ADMIN_BASIC_AUTH_HEADER_VALUE = "Basic YWRtaW46YWRtaW4=";
 
     public static final String NEW_NAME_STRING = "newName";
 
@@ -95,7 +104,6 @@ public class TestUtils {
 
     @Container
     private static PostgreSQLContainer<?> postgreSQLContainer;
-
 
 
     public static String startTestContainer() throws SQLException, LiquibaseException {
@@ -181,4 +189,70 @@ public class TestUtils {
             .slotDTO(TEST_SLOT_DTO)
             .build();
 
+    /**
+     * Подготовка и запуск всех Liquibase скриптов
+     *
+     * @param connection Connection объект связанный с БД
+     * @throws SQLException       - если есть проблемы с БД
+     * @throws LiquibaseException если есть проблемы с liquibase скриптами
+     */
+    public static void startLiquibase(Connection connection) throws SQLException, LiquibaseException {
+        var database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
+
+        String liquibaseSchemaName = "liquibase_schema";
+        createSchemaForLiquibaseLogs(connection, liquibaseSchemaName);
+        database.setLiquibaseSchemaName(liquibaseSchemaName);
+        Liquibase liquibase = new Liquibase("db/changelog/changelog.xml", new ClassLoaderResourceAccessor(), database);
+
+        liquibase.update();
+    }
+
+    /**
+     * Создание отдельной схемы в БД для служебных таблиц liquibase
+     *
+     * @param connection          Connection объект связанный с БД
+     * @param liquibaseSchemaName имя новой liquibase схемы
+     * @throws SQLException в случае если есть проблемы с БД
+     */
+    private static void createSchemaForLiquibaseLogs(Connection connection, String liquibaseSchemaName) throws SQLException {
+        Statement statement = connection.createStatement();
+        String schemaCreationQuery = "CREATE SCHEMA IF NOT EXISTS " + liquibaseSchemaName;
+        statement.executeUpdate(schemaCreationQuery);
+        connection.commit();
+    }
+
+    private static String getTestUserJson(String name, String password, Role role) {
+        return "{\n" +
+                "    \"name\" : \"" + name + "\",\n" +
+                "    \"password\" : \"" + password + "\",\n" +
+                "    \"role\" : \"" + role.name() + "\"\n" +
+                "}";
+    }
+
+    public static final String TEST_USER_JSON = getTestUserJson(ADMIN_LOGIN, ADMIN_PASSWORD, Role.USER);
+
+    private static String getTestPlaceJson(String name, PlaceType placeType) {
+        return "{\n" +
+                "    \"placeName\" : \"" + name + "\",\n" +
+                "    \"placeType\" : \"" + placeType.name() + "\"\n" +
+                "}";
+    }
+
+    public static final String TEST_PLACE_JSON = getTestPlaceJson(TEST_PLACE_NAME_0 + "s", PlaceType.WORKPLACE);
+
+    private static String getTestBookedPlaceJson(PlaceDTO placeDTO, SlotDTO slotDTO) {
+        return "{\n" +
+                "        \"placeDTO\": {\n" +
+                "            \"id\" : " + placeDTO.getId() + ",\n" +
+                "            \"placeName\": \"" + placeDTO.getPlaceName() + "\",\n" +
+                "            \"placeType\": \"" + placeDTO.getPlaceType() + "\"\n" +
+                "        },\n" +
+                "        \"slotDTO\": {\n" +
+                "            \"start\": \"" + slotDTO.getStart() + "\",\n" +
+                "            \"end\": \"" + slotDTO.getEnd() + "\"\n" +
+                "        }\n" +
+                "}";
+    }
+
+    public static String TEST_BOOKED_PLACE_JSON = getTestBookedPlaceJson(TEST_PLACE_DTO, TEST_SLOT_DTO);
 }

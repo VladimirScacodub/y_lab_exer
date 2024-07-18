@@ -1,10 +1,9 @@
 package Repositories;
 
 import liquibase.exception.LiquibaseException;
-import org.coworking.Utils.JDBCUtils;
 import org.coworking.Utils.TimeUtils;
 import org.coworking.repositories.SlotRepository;
-import org.coworking.repositories.SlotRepositoryImpl;
+import org.coworking.repositories.impl.SlotRepositoryImpl;
 import org.junit.jupiter.api.AfterAll;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -12,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import utils.TestUtils;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -34,7 +34,7 @@ class SlotRepositoryImplTest {
     @BeforeAll
     static void setDatabase() throws SQLException, LiquibaseException {
         connection = DriverManager.getConnection(startTestContainer());
-        JDBCUtils.startLiquibase(connection);
+        TestUtils.startLiquibase(connection);
     }
 
     @AfterAll

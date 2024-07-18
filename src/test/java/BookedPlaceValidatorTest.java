@@ -1,12 +1,10 @@
 import liquibase.exception.LiquibaseException;
-import org.coworking.Utils.JDBCUtils;
 import org.coworking.dtos.BookedPlaceDTO;
-import org.coworking.models.enums.PlaceType;
 import org.coworking.repositories.BookedPlaceRepository;
-import org.coworking.repositories.BookedPlaceRepositoryImpl;
-import org.coworking.repositories.PlaceRepositoryImpl;
+import org.coworking.repositories.impl.BookedPlaceRepositoryImpl;
+import org.coworking.repositories.impl.PlaceRepositoryImpl;
 import org.coworking.repositories.SlotRepository;
-import org.coworking.repositories.SlotRepositoryImpl;
+import org.coworking.repositories.impl.SlotRepositoryImpl;
 import org.coworking.repositories.UserRepository;
 import org.coworking.services.validators.BookedPlaceValidator;
 import org.coworking.Utils.exceptions.BookedPlaceConflictsException;
@@ -24,7 +22,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import static java.time.LocalDateTime.parse;
 import static java.time.format.DateTimeFormatter.ofPattern;
@@ -55,7 +52,7 @@ public class BookedPlaceValidatorTest {
     @BeforeAll
     static void setDatabase() throws SQLException, LiquibaseException {
         connection = DriverManager.getConnection(startTestContainer());
-        JDBCUtils.startLiquibase(connection);
+        TestUtils.startLiquibase(connection);
     }
 
     @AfterAll

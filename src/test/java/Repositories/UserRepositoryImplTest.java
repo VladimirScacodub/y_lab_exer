@@ -1,18 +1,16 @@
 package Repositories;
 
 import liquibase.exception.LiquibaseException;
-import org.coworking.Utils.JDBCUtils;
 import org.coworking.models.User;
 import org.coworking.models.enums.Role;
-import org.coworking.repositories.UserRepositoryImpl;
+import org.coworking.repositories.impl.UserRepositoryImpl;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import utils.TestUtils;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -40,7 +38,7 @@ public class UserRepositoryImplTest {
     @BeforeAll
     static void setDatabase() throws SQLException, LiquibaseException {
         connection = DriverManager.getConnection(startTestContainer());
-        JDBCUtils.startLiquibase(connection);
+        TestUtils.startLiquibase(connection);
         EXPECTED_USER_LIST.add(ADMIN_TEST_OBJECT);
     }
 

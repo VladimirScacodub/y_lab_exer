@@ -1,0 +1,9 @@
+spring:
+datasource:
+url: 'jdbc:postgresql://localhost:5234/coworking_service'
+user: 'user'
+password: 'password'
+liquibase:
+liquibaseSchemaName: 'liquibase_schema'
+changeLogFile: 'db/changelog/changelog.xml'
+

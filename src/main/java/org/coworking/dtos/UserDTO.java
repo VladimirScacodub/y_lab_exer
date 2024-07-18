@@ -1,5 +1,6 @@
 package org.coworking.dtos;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,16 +24,19 @@ public class UserDTO {
     /**
      * Имя пользователя нужный для авторизации
      */
+    @ApiModelProperty(example = "john_doe")
     private String name;
 
     /**
      * Пароль пользователя нужный для авторизации
      */
+    @ApiModelProperty(example = "john_password")
     private String password;
 
     /**
      * Роль пользователя в системе
      */
+    @ApiModelProperty(example = "USER")
     private Role role;
 
     @Override

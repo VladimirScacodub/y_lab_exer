@@ -3,14 +3,12 @@ package org.coworking.services;
 import lombok.AllArgsConstructor;
 import org.coworking.Utils.exceptions.PlaceNamingException;
 import org.coworking.annotations.Loggable;
-import org.coworking.dtos.PlaceDTO;
 import org.coworking.models.Place;
 import org.coworking.models.enums.PlaceType;
 import org.coworking.repositories.PlaceRepository;
+import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -18,6 +16,7 @@ import java.util.Optional;
  */
 @Loggable
 @AllArgsConstructor
+@Service
 public class PlaceService {
 
     /**
